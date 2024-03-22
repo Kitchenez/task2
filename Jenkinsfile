@@ -5,8 +5,8 @@ pipeline {
             steps {
                 script {
                     docker.image('openjdk:11').inside {
-                        sh 'git clone <repository_url> project' // Клонируем репозиторий с проектом
-                        sh 'cd project && ./gradlew build' // Выполняем сборку проекта с помощью Gradle (предполагается, что ваш проект использует Gradle)
+                        sh 'git clone https://github.com/Kitchenez/task2.git project' // Клонируем репозиторий с проектом
+                        sh "cd ${WORKSPACE}/project && ./gradlew build" // Выполняем сборку проекта с помощью Gradle
                     }
                 }
             }
