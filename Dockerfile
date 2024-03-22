@@ -1,15 +1,7 @@
-# Используем JDK как базовый образ
-FROM openjdk:latest
+FROM tomcat:9.0
 
-# Устанавливаем рабочую директорию
-WORKDIR /app
+ADD ./webapp/target/*.war usr/local/tomcat/webapp/
 
-# Копируем исходный код и файлы JUnit в контейнер
-COPY . /app
-COPY junit.jar /app
+EXPOSE 8080
 
-# Компилируем исходный код Java с использованием JUnit
-RUN javac -cp junit.jar:. *.java
-
-# Команда для запуска приложения (если нужно)
-# CMD ["java", "MainClass"]
+CMD [ "cataline.sh", "run" ]
