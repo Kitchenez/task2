@@ -1,20 +1,29 @@
 pipeline {
     agent {
         docker {
-            image 'ваш_образ_для_сборки:тег'
+            image 'openjdk:latest' // Образ с Java Development Kit
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
     stages {
         stage('Build') {
             steps {
-                sh 'cd C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\task_2_ksen && javac -cp junit.jar;. *.java'
+                script {
+                    docker.image('openjdk:latest').inside('-v /var/run/docker.sock:/var/run/docker.sock') {
+                        sh 'javac -cp junit.jar:. *.java' // Компилируем исходный код Java
+                        sh 'jar cfe app.jar MainClass *.class' // Создаем исполняемый JAR файл
+                    }
+                }
             }
         }
         stage('Publish Artifact') {
             steps {
-                sh 'cp /path/to/your/project/*.class /app' // Копируем скомпилированные файлы в рабочую директорию
-                archiveArtifacts artifacts: '*.class', fingerprint: true // Сохраняем файлы как артефакты
+                script {
+                    docker.image('openjdk:latest').inside('-v /var/run/docker.sock:/var/run/docker.sock') {
+                        sh 'cp app.jar /app' // Копируем исполняемый JAR файл в рабочую директорию
+                    }
+                }
+                archiveArtifacts artifacts: 'app.jar', fingerprint: true // Сохраняем JAR файл как артефакт
             }
         }
     }
