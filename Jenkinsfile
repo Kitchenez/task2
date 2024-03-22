@@ -5,15 +5,15 @@ pipeline {
             steps {
                 script {
                     docker.image('openjdk:11').inside {
-                        // Используем переменную окружения WORKSPACE для указания рабочего каталога
-                        sh 'git clone https://github.com/Kitchenez/task2.git ${WORKSPACE}/project'
-                        sh "cd ${WORKSPACE}/project && ./gradlew build"
+                        // Используем абсолютный путь к рабочему каталогу
+                        sh 'git clone https://github.com/Kitchenez/task2.git C:/Users/User/Documents/GitHub/task2'
+                        sh "cd C:/Users/User/Documents/GitHub/task2 && ./gradlew build"
                     }
                 }
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'project/build/libs/*.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'C:/Users/User/Documents/GitHub/task2/build/libs/*.jar', fingerprint: true
                 }
             }
         }
