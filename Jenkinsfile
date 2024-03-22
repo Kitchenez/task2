@@ -16,7 +16,7 @@ pipeline {
     post {
         success {
             // Загрузка JAR-файла в артефакты при успешном завершении сборки
-            archiveArtifacts 'target/*.jar'
+            archiveArtifacts '/absolute/path/to/your/target/*.jar'
         }
     }
 }
