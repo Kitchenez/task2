@@ -1,0 +1,9 @@
+<dependencies>
+    <!-- Добавляем зависимость на JUnit -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version> <!-- или любую другую версию JUnit -->
+        <scope>test</scope> <!-- Объявляем, что эта зависимость нужна только для тестов -->
+    </dependency>
+</dependencies>
