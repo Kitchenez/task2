@@ -1,20 +1,22 @@
 pipeline {
-    agent {
-        docker {
-            image 'openjdk:11' // Используем образ OpenJDK 11
-        }
-    }
+    agent none
+    
     stages {
         stage('Build') {
+            agent {
+                docker { image 'maven:3.8.4-openjdk-11' }
+            }
             steps {
-                sh 'git clone https://github.com/Kitchenez/task2.git' // Клонируем репозиторий
-                sh 'cd task2 && ./gradlew build' // Собираем проект внутри контейнера
+                // Шаги сборки проекта внутри контейнера Docker
+                sh 'mvn clean package'
             }
-            post {
-                success {
-                    archiveArtifacts artifacts: 'task2/build/libs/*.jar', fingerprint: true // Архивируем артефакты сборки
-                }
-            }
+        }
+    }
+    
+    post {
+        success {
+            // Загрузка JAR-файла в артефакты при успешном завершении сборки
+            archiveArtifacts 'target/*.jar'
         }
     }
 }
