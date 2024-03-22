@@ -1,6 +1,13 @@
 pipeline {
-    agent any
-
+    agent {
+        docker {
+            // Используем образ openjdk для сборки
+            image 'openjdk:latest'
+            // Указываем рабочую директорию внутри контейнера
+            args '-v /var/run/docker.sock:/var/run/docker.sock -w /app'
+        }
+    }
+    
     stages {
         stage('Checkout') {
             steps {
@@ -9,12 +16,6 @@ pipeline {
             }
         }
         stage('Build') {
-            agent {
-                docker {
-                    // Используем образ openjdk для сборки
-                    image 'openjdk:latest'
-                }
-            }
             steps {
                 // Компилируем исходный код Java
                 sh 'javac -cp junit.jar:. *.java'
@@ -29,6 +30,7 @@ pipeline {
             }
         }
     }
+    
     post {
         success {
             // Выводим сообщение об успешном завершении пайплайна
