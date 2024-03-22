@@ -1,42 +1,24 @@
-// This Jenkinsfile should simulate a minimal Jenkins pipeline and can serve as a starting point.
-// NOTE: sleep commands are solelely inserted for the purpose of simulating long running tasks when you run the pipeline
-node {
-   // Mark the code checkout 'stage'....
-   stage 'checkout'
-
-   // Get some code from a GitHub repository
-   git url: 'https://github.com/Kitchenez/task2'
-   sh 'git clean -fdx; sleep 4;'
-
-   // Get the maven tool.
-   // ** NOTE: This 'mvn' maven tool must be configured
-   // **       in the global configuration.
-   def mvnHome = tool 'mvn'
-
-   stage 'build'
-   // set the version of the build artifact to the Jenkins BUILD_NUMBER so you can
-   // map artifacts to Jenkins builds
-   sh "${mvnHome}/bin/mvn versions:set -DnewVersion=${env.BUILD_NUMBER}"
-   sh "${mvnHome}/bin/mvn package"
-
-   stage 'test'
-   parallel 'test': {
-     sh "${mvnHome}/bin/mvn test; sleep 2;"
-   }, 'verify': {
-     sh "${mvnHome}/bin/mvn verify; sleep 3"
-   }
-
-   stage 'archive'
-   archive 'target/*.jar'
-}
-
-
-node {
-   stage 'deploy Canary'
-   sh 'echo "write your deploy code here"; sleep 5;'
-
-   stage 'deploy Production'
-   input 'Proceed?'
-   sh 'echo "write your deploy code here"; sleep 6;'
-   archive 'target/*.jar'
+pipeline {
+    agent {
+        docker {
+            image 'maven:3.8.1-jdk-11' // Используем образ Maven с JDK 11 для сборки проекта
+            args '-v /root/.m2:/root/.m2' // Монтируем папку Maven для кэширования зависимостей
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    docker.image('maven:3.8.1-jdk-11').inside { // Запускаем сборку внутри контейнера
+                        sh 'mvn clean package' // Сборка проекта с помощью Maven
+                    }
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true // Архивируем готовый бинарник
+                }
+            }
+        }
+    }
 }
