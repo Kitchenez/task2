@@ -30,8 +30,8 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true // Архивируем исполняемый файл .jar из директории build/libs
-            junit 'build/reports/**/*.xml' // Дополнительно архивируем junit отчеты
+            archiveArtifacts artifacts: 'devops-automation/target/*.jar', fingerprint: true // Архивируем исполняемый файл .jar из директории devops-automation/target
+            junit 'devops-automation/build/reports/**/*.xml' // Дополнительно архивируем junit отчеты
         }
     }
 }
