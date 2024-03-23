@@ -29,10 +29,9 @@ pipeline {
         }
     }
     post {
-        success {
-            // Копируем исполняемый файл в директорию с артефактами
-            sh 'cp target/devops-integration.jar ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/archive/'
-            archiveArtifacts 'target/devops-integration.jar' // Указываем, какой файл архивировать как артефакт
+        always {
+            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true // Архивируем исполняемый файл .jar из директории build/libs
+            junit 'build/reports/**/*.xml' // Дополнительно архивируем junit отчеты
         }
     }
 }
