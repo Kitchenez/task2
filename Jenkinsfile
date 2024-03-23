@@ -31,8 +31,8 @@ pipeline {
     post {
         success {
             // Копируем исполняемый файл в директорию с артефактами
-            sh 'cp target/*.jar ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/archive/'
-            archiveArtifacts 'target/*.jar' // Указываем, какой файл архивировать как артефакт
+            sh 'cp target/devops-integration.jar ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/archive/'
+            archiveArtifacts 'target/devops-integration.jar' // Указываем, какой файл архивировать как артефакт
         }
     }
 }
